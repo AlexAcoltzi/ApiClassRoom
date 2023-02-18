@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.util.Optional;
 
 @RestController
@@ -18,11 +19,13 @@ public class CursoController {
 
     @PostMapping("/NewCurso")
     public ResponseEntity<?> crearCurso(@RequestBody Curso curso){
+        String ruta = createDirectory(curso.getNombreCurso());
+        curso.setRuta(ruta);
         cursoRepository.save(curso);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PutMapping("updateCurso")
+    @PutMapping("/updateCurso")
     public ResponseEntity<Curso> updateCurso(@RequestBody Curso cursoData, @RequestParam long NRC){
         Optional<Curso> curso = cursoRepository.findCursoByNRC(NRC);
         Curso curso1 = curso.get();
@@ -31,6 +34,21 @@ public class CursoController {
         curso1.setHorarioCurso(cursoData.getHorarioCurso());
         cursoRepository.save(curso1);
         return ResponseEntity.ok(curso1);
+    }
+
+    private static String createDirectory(String name){
+        String PATH = "../../Cursos/";
+        String directoryName = PATH.concat(name);
+
+        File directory = new File(directoryName);
+        if (!directory.exists()){
+            if (directory.mkdirs()){
+                System.out.println("Directorio creado " + directoryName);
+            } else{
+                System.out.println("Failed to create directory!");
+            }
+        }
+        return directoryName;
     }
 
 }

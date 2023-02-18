@@ -20,7 +20,7 @@ public class UsuarioController {
     protected User verifyUser(long matricula){
         Optional<User> user = userRepository.findUserByMatricula(matricula);
         if (!user.isPresent()){
-            throw new ResourceNotFoundException("No se encontro el alumno con matricula" + matricula);
+            throw new ResourceNotFoundException("No se encontro el alumno con matricula " + matricula + " intenta de nuevo");
         }
         return user.get();
     }
@@ -47,17 +47,11 @@ public class UsuarioController {
         return new ResponseEntity<>("contraseña incorrecta",HttpStatus.UNAUTHORIZED);
     }
 
-    @PutMapping("/Update")
-    public ResponseEntity<?> updateUser(@RequestBody User user, @RequestParam long matricula){
+    @PutMapping("/cambiarContraseña/")
+    public ResponseEntity<?> updateUser(@RequestParam String contrasena, @RequestParam long matricula){
         User user1 = verifyUser(matricula);
-        user1.setContrasena(user.getContrasena());
-        user1.setCorreo(user.getCorreo());
-        user1.setRuta(user.getRuta());
-        user1.setNombre(user.getNombre());
+        user1.setContrasena(contrasena);
         userRepository.save(user1);
-
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
-
 }
