@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#Archivos basura
+debugAppInfo.log
+debugAppInfo.log.2023-02-16.0.gz
