@@ -48,6 +48,10 @@ public class User {
     @Getter @Setter
     private List<Curso> cursos;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "maestro")
+    private List<Curso> cursosMaestros;
+
+
     public User(long idUser, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
         this.idUser = idUser;
         this.correo = correo;

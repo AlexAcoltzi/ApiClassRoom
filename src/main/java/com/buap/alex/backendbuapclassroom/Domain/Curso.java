@@ -43,5 +43,9 @@ public class Curso {
     @Getter @Setter
     private List<User> Alumnos;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idMaestro")
+    private User maestro;
+
 
 }
