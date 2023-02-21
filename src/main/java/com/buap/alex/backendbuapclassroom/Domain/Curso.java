@@ -3,6 +3,9 @@ package com.buap.alex.backendbuapclassroom.Domain;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @Entity
 @Table(name = "Curso")
 @EqualsAndHashCode
@@ -35,6 +38,10 @@ public class Curso {
     @Column(name = "ruta", nullable = false)
     @Getter @Setter
     private String ruta;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "cursos")
+    @Getter @Setter
+    private List<User> Alumnos;
 
 
 }

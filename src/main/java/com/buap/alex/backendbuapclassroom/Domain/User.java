@@ -8,6 +8,8 @@ import lombok.ToString;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import java.util.List;
+
 @Entity
 @Table(name = "Usuario")
 @ToString
@@ -37,6 +39,14 @@ public class User {
     @Column(name = "ruta")
     @Getter @Setter
     private String ruta;
+
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "AlumnoCursos", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idCurso")
+    )
+    @Getter @Setter
+    private List<Curso> cursos;
 
     public User(long idUser, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
         this.idUser = idUser;
