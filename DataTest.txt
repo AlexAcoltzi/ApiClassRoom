@@ -1,0 +1,19 @@
+Prueba Curso
+
+{
+    "nrc" : 555143,
+    "nombreCurso" : "Prueba1",
+    "diasCurso" : "L- M - V",
+    "ruta": null,
+    "horarioCurso" : "11-13"
+}
+
+Prueba Alumno
+
+{
+    "nombre" : "Alex Acoltzi",
+    "correo" : "correo@buap.mx",
+    "contrasena" : "123456",
+    "matricula" : "201829153",
+    "tipo" : 1
+}

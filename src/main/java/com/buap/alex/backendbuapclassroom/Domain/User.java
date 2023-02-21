@@ -17,8 +17,8 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idUser")
-    @Getter @Setter
-    private long id;
+    @Getter
+    private long idUser;
     @Column(name = "correo", nullable = false, unique = true)
     @Getter @Setter
     private String correo;
@@ -38,8 +38,8 @@ public class User {
     @Getter @Setter
     private String ruta;
 
-    public User(long id, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
-        this.id = id;
+    public User(long idUser, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
+        this.idUser = idUser;
         this.correo = correo;
         this.contrasena = contrasena;
         this.matricula = matricula;
