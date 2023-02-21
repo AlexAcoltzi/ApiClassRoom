@@ -1,6 +1,7 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
+import com.buap.alex.backendbuapclassroom.exception.ResourceNotFoundException;
 import com.buap.alex.backendbuapclassroom.repository.CursoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class CursoController {
 
     @PostMapping("/NewCurso")
     public ResponseEntity<?> crearCurso(@RequestBody Curso curso){
-        String ruta = createDirectory(curso.getNombreCurso());
+        String ruta = createDirectory(curso.getNombreCurso(), curso.getNRC());
         curso.setRuta(ruta);
         cursoRepository.save(curso);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -36,9 +37,15 @@ public class CursoController {
         return ResponseEntity.ok(curso1);
     }
 
-    private static String createDirectory(String name){
+    @GetMapping("/getCurso")
+    public ResponseEntity<?> getCurso(@RequestParam long NRC){
+        return new ResponseEntity<>(verifyCurso(NRC), HttpStatus.OK);
+    }
+
+    private static String createDirectory(String name, long NRC){
         String PATH = "../../Cursos/";
-        String directoryName = PATH.concat(name);
+        String directoryName = PATH.concat(name.concat("/".concat(String.valueOf(NRC))));
+
 
         File directory = new File(directoryName);
         if (!directory.exists()){
@@ -49,6 +56,14 @@ public class CursoController {
             }
         }
         return directoryName;
+    }
+
+    protected Curso verifyCurso(long NRC){
+        Optional<Curso> curso = cursoRepository.findCursoByNRC(NRC);
+        if (!curso.isPresent()){
+            throw new ResourceNotFoundException("Not found class");
+        }
+        return curso.get();
     }
 
 }

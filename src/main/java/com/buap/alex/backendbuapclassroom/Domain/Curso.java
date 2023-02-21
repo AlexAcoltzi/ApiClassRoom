@@ -14,7 +14,7 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idCurso")
     @Getter @Setter
-    private long id;
+    private long idCurso;
 
     @Column(name = "NRC", nullable = false)
     @Getter @Setter
