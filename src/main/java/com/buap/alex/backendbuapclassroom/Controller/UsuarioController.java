@@ -36,13 +36,15 @@ public class UsuarioController {
         return new ResponseEntity<>(verifyUser(matricula), HttpStatus.OK);
     }
 
-    @GetMapping("/getAcces/")
+
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/getAcces")
     public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena){
         Optional<User> user = userRepository.findUserByMatricula(matricula);
         User userData = user.get();
         String contraDb = userData.getContrasena();
         if (contraDb.equals(contrasena)){
-            return new ResponseEntity<>("Autorizado",HttpStatus.OK);
+            return new ResponseEntity<>( user,HttpStatus.OK);
         }
         return new ResponseEntity<>("contraseña incorrecta",HttpStatus.UNAUTHORIZED);
     }

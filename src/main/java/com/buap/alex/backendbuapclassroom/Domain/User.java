@@ -51,6 +51,13 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "maestro")
     private List<Curso> cursosMaestros;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "AlumnoTarea", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idtarea")
+    )
+    @Getter @Setter
+    private List<Tarea> tareasList;
+
 
     public User(long idUser, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
         this.idUser = idUser;

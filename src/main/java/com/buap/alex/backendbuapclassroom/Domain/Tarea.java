@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -32,11 +34,11 @@ public class Tarea {
 
     @Column(name = "horaDePublicacion")
     @Getter @Setter
-    private String horaDePublicacion;
+    private Date horaDePublicacion;
 
     @Column(name = "fechaLimite")
     @Getter @Setter
-    private String fechaLimite;
+    private Date fechaLimite;
 
     @Column(name = "horaLimite")
     @Getter @Setter
@@ -45,4 +47,12 @@ public class Tarea {
     @Column(name = "ruta")
     @Getter @Setter
     private String ruta;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @Getter @Setter
+    private Curso curso;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "tareasList")
+    @Getter @Setter
+    private List<User> alumnos;
 }
