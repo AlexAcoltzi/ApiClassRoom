@@ -25,15 +25,15 @@ public class Curso {
 
     @Column(name = "nombreCurso", nullable = false)
     @Getter @Setter
-    private String nombreCurso;
+    private String nombre;
 
     @Column(name = "diasCurso", nullable = false)
     @Getter @Setter
-    private String diasCurso;
+    private String dias;
 
     @Column(name = "horarioCurso", nullable = false)
     @Getter @Setter
-    private String horarioCurso;
+    private String horario;
 
     @Column(name = "ruta", nullable = false)
     @Getter @Setter
@@ -46,6 +46,9 @@ public class Curso {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idMaestro")
     private User maestro;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "curso")
+    private List<Tarea> tareas;
 
 
 }

@@ -20,7 +20,7 @@ public class CursoController {
 
     @PostMapping("/NewCurso")
     public ResponseEntity<?> crearCurso(@RequestBody Curso curso){
-        String ruta = createDirectory(curso.getNombreCurso(), curso.getNRC());
+        String ruta = createDirectory(curso.getNombre(), curso.getNRC());
         curso.setRuta(ruta);
         cursoRepository.save(curso);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -30,9 +30,9 @@ public class CursoController {
     public ResponseEntity<Curso> updateCurso(@RequestBody Curso cursoData, @RequestParam long NRC){
         Optional<Curso> curso = cursoRepository.findCursoByNRC(NRC);
         Curso curso1 = curso.get();
-        curso1.setNombreCurso(cursoData.getNombreCurso());
-        curso1.setDiasCurso(cursoData.getDiasCurso());
-        curso1.setHorarioCurso(cursoData.getHorarioCurso());
+        curso1.setNombre(cursoData.getNombre());
+        curso1.setDias(cursoData.getDias());
+        curso1.setHorario(cursoData.getHorario());
         cursoRepository.save(curso1);
         return ResponseEntity.ok(curso1);
     }
