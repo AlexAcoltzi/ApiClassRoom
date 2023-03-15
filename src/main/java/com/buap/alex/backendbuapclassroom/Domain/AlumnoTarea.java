@@ -25,6 +25,10 @@ public class AlumnoTarea {
     @Getter @Setter
     private Tarea tarea;
 
+    @Column(name = "ruta")
+    @Getter @Setter
+    private String ruta;
+
     @Column(name = "calificacion")
     @Getter @Setter
     private int calificacion;
