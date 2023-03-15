@@ -51,8 +51,4 @@ public class Tarea {
     @ManyToOne(cascade = CascadeType.ALL)
     @Getter @Setter
     private Curso curso;
-
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "tareasList")
-    @Getter @Setter
-    private List<User> alumnos;
 }
