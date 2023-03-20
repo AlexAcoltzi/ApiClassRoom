@@ -51,6 +51,9 @@ public class User {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "maestro")
     private List<Curso> cursosMaestros;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private List<Comentario> comentarios;
+
 
     public User(long idUser, String correo, String contrasena, long matricula, String nombre, int tipo, String ruta) {
         this.idUser = idUser;

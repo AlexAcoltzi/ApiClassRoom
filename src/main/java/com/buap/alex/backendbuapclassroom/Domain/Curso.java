@@ -50,5 +50,8 @@ public class Curso {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "curso")
     private List<Tarea> tareas;
 
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "cursos")
+    private List<Comentario> comentarios;
+
 
 }

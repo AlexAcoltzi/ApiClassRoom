@@ -29,6 +29,7 @@ public class AlumnoTarea {
     @Getter @Setter
     private String ruta;
 
+
     @Column(name = "calificacion")
     @Getter @Setter
     private int calificacion;
