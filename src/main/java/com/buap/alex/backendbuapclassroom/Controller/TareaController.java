@@ -22,16 +22,16 @@ public class TareaController {
 
     @PostMapping("/crearTarea")
     public ResponseEntity<?> crearTarea(@RequestBody Tarea tarea, @RequestParam  Long nrc){
-        Curso curso= cursoRepository.findCursoByNRC(nrc).get();
+        Curso curso= cursoRepository.findCursoByNrc(nrc).get();
         String Ruta = createDirectory(curso.getRuta(), tarea.getNombre());
         tarea.setRuta(Ruta);
         repository.save(tarea);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    private static String createDirectory(String ruta, String name){
+    protected static String createDirectory(String ruta, String name){
         String PATH = ruta;
-        String directoryName = PATH.concat(name);
+        String directoryName = PATH.concat(" " + name);
 
 
         File directory = new File(directoryName);

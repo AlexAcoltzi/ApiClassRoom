@@ -13,41 +13,59 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
+//Entidad que nos ayudara a crear actividades asignadas a los cursos.
 public class Tarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idtarea")
-    @Getter @Setter
+    @Getter
     private long idTarea;
+
+
 
     @Column(name = "nombre")
     @Getter @Setter
     private String nombre;
 
+
+
     @Column(name = "descripcion")
     @Getter @Setter
     private String descripcion;
+
+
 
     @Column(name = "fechaDePublicacion")
     @Getter @Setter
     private String fechaDePublicacion;
 
+
+
     @Column(name = "horaDePublicacion")
     @Getter @Setter
     private Date horaDePublicacion;
+
+
 
     @Column(name = "fechaLimite")
     @Getter @Setter
     private Date fechaLimite;
 
+
+
     @Column(name = "horaLimite")
     @Getter @Setter
     private String horaLimite;
+
+
 
     @Column(name = "ruta")
     @Getter @Setter
     private String ruta;
 
+
+
+    //Relación muchos a uno, puede haber muchas tareas en un curso.
     @ManyToOne(cascade = CascadeType.ALL)
     @Getter @Setter
     private Curso curso;

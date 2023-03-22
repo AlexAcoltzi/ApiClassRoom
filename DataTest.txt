@@ -1,11 +1,13 @@
 Prueba Curso
 
 {
-    "nrc" : 555143,
-    "nombreCurso" : "Prueba1",
-    "diasCurso" : "L- M - V",
-    "ruta": null,
-    "horarioCurso" : "11-13"
+   "curso" : {
+       "NRC" : 551623,
+       "nombre" : "Dispositivos Móviles Avanzado",
+       "dias" : "L - M - V",
+       "horario" : "11 - 13"
+   },
+   "id" : 2
 }
 
 Prueba Alumno

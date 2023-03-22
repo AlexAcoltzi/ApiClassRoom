@@ -20,18 +20,21 @@ public class UsuarioController {
     protected User verifyUser(long matricula){
         Optional<User> user = userRepository.findUserByMatricula(matricula);
         if (!user.isPresent()){
-            throw new ResourceNotFoundException("No se encontro el alumno con matricula " + matricula + " intenta de nuevo");
+            throw new ResourceNotFoundException("No se encontró el alumno con matricula " + matricula + " intenta de nuevo");
         }
         return user.get();
     }
 
     @PostMapping("/NewUser")
     public ResponseEntity<?> createUser(@RequestBody User user){
+        if (userRepository.existsUserByCorreoOrMatricula(user.getCorreo(), user.getMatricula())){
+            throw new ResourceNotFoundException("Ya existe el usuario con esa matricula o ese correo");
+        }
         userRepository.save(user);
-        return new ResponseEntity<>(null, HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @GetMapping("/getUserByMat/{matricula}")
+    @GetMapping("/getUserByMat")
     public ResponseEntity<?> getUserByMat(@RequestParam long matricula){
         return new ResponseEntity<>(verifyUser(matricula), HttpStatus.OK);
     }
@@ -42,9 +45,9 @@ public class UsuarioController {
         User userData = user.get();
         String contraDb = userData.getContrasena();
         if (contraDb.equals(contrasena)){
-            return new ResponseEntity<>( user,HttpStatus.OK);
+            throw new ResourceNotFoundException("Contraseña incorrecta");
         }
-        return new ResponseEntity<>("contraseña incorrecta",HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>( user,HttpStatus.OK);
     }
 
     @PutMapping("/cambiarContraseña/")

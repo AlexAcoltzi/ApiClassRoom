@@ -7,5 +7,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface UserRepository extends CrudRepository<User, Long>{
-    public Optional<User> findUserByMatricula(Long matricula);
+    Optional<User> findUserByMatricula(Long matricula);
+    boolean existsUserByCorreoOrMatricula(String correo, long matricula);
+
+    Optional<User> findUserByIdUser(long id);
 }
