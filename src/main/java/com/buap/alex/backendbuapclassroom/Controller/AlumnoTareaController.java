@@ -2,8 +2,8 @@ package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Domain.AlumnoTarea;
 import com.buap.alex.backendbuapclassroom.Domain.Tarea;
-import com.buap.alex.backendbuapclassroom.exception.ResourceNotFoundException;
-import com.buap.alex.backendbuapclassroom.repository.AlumnoTareaRepository;
+import com.buap.alex.backendbuapclassroom.Exception.ResourceNotFoundException;
+import com.buap.alex.backendbuapclassroom.Repository.AlumnoTareaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

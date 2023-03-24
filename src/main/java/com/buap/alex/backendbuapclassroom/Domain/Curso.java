@@ -1,9 +1,12 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
+import javax.swing.text.View;
 import java.util.List;
 
 @Entity
@@ -16,6 +19,7 @@ public class Curso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.User.class})
     @Column(name = "idCurso")
     @Getter
     private long idCurso;
@@ -52,7 +56,8 @@ public class Curso {
 
 
     /*Relación muchos a muchos, un curso puede tener muchos alumnos inscritos*/
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "cursos")
+    @JsonView(JsonViewProfiles.Curso.class)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cursos")
     @Getter @Setter
     private List<User> Alumnos;
 

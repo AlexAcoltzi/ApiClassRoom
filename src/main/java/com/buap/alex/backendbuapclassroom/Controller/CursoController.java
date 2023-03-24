@@ -3,9 +3,9 @@ package com.buap.alex.backendbuapclassroom.Controller;
 import com.buap.alex.backendbuapclassroom.Data.CursoMaestro;
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.User;
-import com.buap.alex.backendbuapclassroom.exception.ResourceNotFoundException;
-import com.buap.alex.backendbuapclassroom.repository.CursoRepository;
-import com.buap.alex.backendbuapclassroom.repository.UserRepository;
+import com.buap.alex.backendbuapclassroom.Exception.ResourceNotFoundException;
+import com.buap.alex.backendbuapclassroom.Repository.CursoRepository;
+import com.buap.alex.backendbuapclassroom.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,6 +52,23 @@ public class CursoController {
     @GetMapping("/getCurso")
     public ResponseEntity<?> getCurso(@RequestParam long NRC){
         return new ResponseEntity<>(verifyCurso(NRC), HttpStatus.OK);
+    }
+
+    @PostMapping("/AgregarAlumno")
+    public ResponseEntity<?> agregarAlumno(@RequestParam long idUser, @RequestParam long idCurso){
+        Optional<Curso> curso = cursoRepository.findById(idCurso);
+        Optional<User> user = userRepository.findUserByIdUser(idUser);
+        if (!curso.isPresent() || !user.isPresent()){
+            throw new ResourceNotFoundException("no existe el usuario o la clase");
+        }
+        List<User> listU = curso.get().getAlumnos();
+        List<Curso> listC = user.get().getCursos();
+        listU.add(user.get());
+        listC.add(curso.get());
+        cursoRepository.save(curso.get());
+        userRepository.save(user.get());
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private static String createDirectory(String name, long NRC){

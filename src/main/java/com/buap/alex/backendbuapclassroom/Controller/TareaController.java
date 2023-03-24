@@ -2,8 +2,8 @@ package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.Tarea;
-import com.buap.alex.backendbuapclassroom.repository.CursoRepository;
-import com.buap.alex.backendbuapclassroom.repository.TareaRepository;
+import com.buap.alex.backendbuapclassroom.Repository.CursoRepository;
+import com.buap.alex.backendbuapclassroom.Repository.TareaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

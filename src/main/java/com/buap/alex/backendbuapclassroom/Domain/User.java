@@ -1,7 +1,9 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +11,9 @@ import lombok.ToString;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
 
+import javax.swing.text.View;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Usuario")
@@ -21,6 +25,7 @@ import java.util.List;
 public class User {
     @Id //Id único con el que se reconoce al usuario
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView({JsonViewProfiles.User.class, JsonViewProfiles.Curso.class})
     @Column(name = "idUser")
     @Getter
     private long idUser;
@@ -61,7 +66,8 @@ public class User {
     /*Relación de muchos a muchos con cursos, en cuestión de alumnos (Un alumno puede estar inscrito en muchos cursos y
     muchos cursos pueden tener inscritos a muchos alumnos)
      */
-    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonView(JsonViewProfiles.User.class)
+    @ManyToMany(cascade = CascadeType.ALL, fetch =FetchType.LAZY)
     @JoinTable(
             name = "AlumnoCursos", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idCurso")
     )
