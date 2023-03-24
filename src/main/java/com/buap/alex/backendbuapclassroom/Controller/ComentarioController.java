@@ -1,7 +1,7 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Domain.Comentario;
-import com.buap.alex.backendbuapclassroom.repository.ComentarioRepository;
+import com.buap.alex.backendbuapclassroom.Repository.ComentarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

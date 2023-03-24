@@ -1,8 +1,12 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
+import com.buap.alex.backendbuapclassroom.Data.Acceso;
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.buap.alex.backendbuapclassroom.Domain.User;
-import com.buap.alex.backendbuapclassroom.exception.ResourceNotFoundException;
-import com.buap.alex.backendbuapclassroom.repository.UserRepository;
+import com.buap.alex.backendbuapclassroom.Exception.ResourceNotFoundException;
+import com.buap.alex.backendbuapclassroom.Repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,16 +39,18 @@ public class UsuarioController {
     }
 
     @GetMapping("/getUserByMat")
-    public ResponseEntity<?> getUserByMat(@RequestParam long matricula){
-        return new ResponseEntity<>(verifyUser(matricula), HttpStatus.OK);
+    public ResponseEntity<?> getUserByMat(@RequestParam long matricula) throws JsonProcessingException {
+        User user = verifyUser(matricula);
+        String user1 = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(user);
+        return new ResponseEntity<>(user1, HttpStatus.OK);
     }
 
     @GetMapping("/getAcces")
-    public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena){
-        Optional<User> user = userRepository.findUserByMatricula(matricula);
+    public ResponseEntity<?> getAcces(@RequestBody Acceso acceso){
+        Optional<User> user = userRepository.findUserByMatricula(acceso.getMatricula());
         User userData = user.get();
         String contraDb = userData.getContrasena();
-        if (contraDb.equals(contrasena)){
+        if (contraDb.equals(acceso.getContrasena())){
             throw new ResourceNotFoundException("Contraseña incorrecta");
         }
         return new ResponseEntity<>( user,HttpStatus.OK);
