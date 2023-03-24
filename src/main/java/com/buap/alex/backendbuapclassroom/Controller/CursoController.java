@@ -1,11 +1,14 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Data.CursoMaestro;
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.User;
 import com.buap.alex.backendbuapclassroom.Exception.ResourceNotFoundException;
 import com.buap.alex.backendbuapclassroom.Repository.CursoRepository;
 import com.buap.alex.backendbuapclassroom.Repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,10 +53,14 @@ public class CursoController {
     }
 
     @GetMapping("/getCurso")
-    public ResponseEntity<?> getCurso(@RequestParam long NRC){
-        return new ResponseEntity<>(verifyCurso(NRC), HttpStatus.OK);
+    public ResponseEntity<?> getCurso(@RequestParam long NRC) throws JsonProcessingException {
+        Curso curso = verifyCurso(NRC);
+        String cursoRet = new ObjectMapper().writerWithView(JsonViewProfiles.Curso.class).writeValueAsString(curso);
+        return new ResponseEntity<>(cursoRet, HttpStatus.OK);
     }
 
+
+    //Función para agregar un alumno a una clase
     @PostMapping("/AgregarAlumno")
     public ResponseEntity<?> agregarAlumno(@RequestParam long idUser, @RequestParam long idCurso){
         Optional<Curso> curso = cursoRepository.findById(idCurso);

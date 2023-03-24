@@ -1,9 +1,11 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
+@JsonView(JsonViewProfiles.Tarea.class)
 //Entidad que nos ayudara a crear actividades asignadas a los cursos.
 public class Tarea {
     @Id

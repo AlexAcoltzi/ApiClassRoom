@@ -10,17 +10,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
-
-import javax.swing.text.View;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "Usuario")
 @ToString
 @EqualsAndHashCode
 @NoArgsConstructor
-
+@JsonView(JsonViewProfiles.User.class)
 //Entidad con los datos necesarios de un usuario en el sistema
 public class User {
     @Id //Id único con el que se reconoce al usuario
@@ -66,7 +63,6 @@ public class User {
     /*Relación de muchos a muchos con cursos, en cuestión de alumnos (Un alumno puede estar inscrito en muchos cursos y
     muchos cursos pueden tener inscritos a muchos alumnos)
      */
-    @JsonView(JsonViewProfiles.User.class)
     @ManyToMany(cascade = CascadeType.ALL, fetch =FetchType.LAZY)
     @JoinTable(
             name = "AlumnoCursos", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idCurso")
@@ -79,14 +75,12 @@ public class User {
     /*Relación uno a muchos con cursos en relación con maestros(un maestro puede tener asignado y
     muchos cursos pueden tener asignado a un maestro)
      */
-    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "maestro")
     @Getter @Setter
     private List<Curso> cursosMaestros;
 
 
     /*Relación uno a muchos, un usuario puede tener muchos comentarios*/
-    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     @Getter @Setter
     private List<Comentario> comentarios;
@@ -94,7 +88,6 @@ public class User {
 
 
     //Relación uno a muchos, un usuario puede tener muchos archivos
-    @JsonManagedReference
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "autor")
     @Getter @Setter
     private List<Archivo> archivos;

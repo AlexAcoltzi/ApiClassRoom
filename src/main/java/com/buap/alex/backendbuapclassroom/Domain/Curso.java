@@ -2,11 +2,10 @@ package com.buap.alex.backendbuapclassroom.Domain;
 
 import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
-
-import javax.swing.text.View;
 import java.util.List;
 
 @Entity
@@ -14,12 +13,13 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @ToString
+@JsonView(JsonViewProfiles.Curso.class)
 //Entidad curso la cual nos ayuda a saber que curso, quien lo imparte y quienes están inscritos al mismo
 public class Curso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.User.class})
+    @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.User.class, JsonViewProfiles.Comentario.class, JsonViewProfiles.Archivo.class, JsonViewProfiles.AlumnoTarea.class, JsonViewProfiles.Tarea.class})
     @Column(name = "idCurso")
     @Getter
     private long idCurso;
@@ -56,35 +56,33 @@ public class Curso {
 
 
     /*Relación muchos a muchos, un curso puede tener muchos alumnos inscritos*/
-    @JsonView(JsonViewProfiles.Curso.class)
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cursos")
     @Getter @Setter
     private List<User> Alumnos;
 
 
     /*Relación muchos a uno, muchos cursos pueden ser impartidos por un profesor*/
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "idMaestro")
     @Getter @Setter
     private User maestro;
 
 
-    /*Relación uno a muchos, un curso puede tener muchas tareas*/
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "curso")
+    //Relación uno a muchos, un curso puede tener muchas tareas
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "curso", fetch = FetchType.LAZY)
     @Getter @Setter
     private List<Tarea> tareas;
 
 
-    /*Relación muchos a muchos, muchos cursos pueden tener muchos comentarios*/
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "cursos")
+    //Relación muchos a muchos, muchos cursos pueden tener muchos comentarios
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cursos")
     @Getter @Setter
     private List<Comentario> comentarios;
 
 
 
     //Relación muchos a muchos, muchos cursos pueden tener muchos archivos
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "ArchivosCurso", joinColumns = @JoinColumn(name = "idCurso"), inverseJoinColumns = @JoinColumn(name = "idArchivo")
     )

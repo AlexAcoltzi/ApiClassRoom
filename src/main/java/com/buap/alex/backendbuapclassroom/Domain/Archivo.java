@@ -1,6 +1,8 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,9 +13,11 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 @EqualsAndHashCode
+@JsonView(JsonViewProfiles.Archivo.class)
 public class Archivo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.Archivo.class})
     @Column(name = "idArchivo")
     @Getter
     private long ididArchivo;
@@ -37,7 +41,6 @@ public class Archivo {
 
 
     //Relación muchos a uno, muchos archivos pueden ser de un usuario
-    @JsonBackReference
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "autor")
     @Getter

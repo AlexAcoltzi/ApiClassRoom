@@ -1,6 +1,8 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,11 +14,13 @@ import java.util.List;
 @ToString
 @NoArgsConstructor
 @EqualsAndHashCode
+@JsonView(JsonViewProfiles.Comentario.class)
 //Entidad que permite almacenar los comentarios realizados por los usuarios a un curso
 public class Comentario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.Comentario.class})
     @Column(name = "idComent")
     @Getter
     private Long idComent;
