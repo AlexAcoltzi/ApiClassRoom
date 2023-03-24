@@ -46,14 +46,16 @@ public class UsuarioController {
     }
 
     @GetMapping("/getAcces")
-    public ResponseEntity<?> getAcces(@RequestBody Acceso acceso){
-        Optional<User> user = userRepository.findUserByMatricula(acceso.getMatricula());
+    public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena) throws JsonProcessingException {
+        Optional<User> user = userRepository.findUserByMatricula(matricula);
         User userData = user.get();
         String contraDb = userData.getContrasena();
-        if (contraDb.equals(acceso.getContrasena())){
+        System.out.println(contraDb);
+        if (!contraDb.equals(contrasena)){
             throw new ResourceNotFoundException("Contraseña incorrecta");
         }
-        return new ResponseEntity<>( user,HttpStatus.OK);
+        String user1 = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(userData);
+        return new ResponseEntity<>( user1,HttpStatus.OK);
     }
 
     @PutMapping("/cambiarContraseña/")

@@ -1,5 +1,7 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
+import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
+import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @Table(name = "alumno_tarea")
 @ToString
+@JsonView(JsonViewProfiles.AlumnoTarea.class)
 public class AlumnoTarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
