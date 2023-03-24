@@ -1,8 +1,7 @@
-package com.buap.alex.backendbuapclassroom.repository;
+package com.buap.alex.backendbuapclassroom.Repository;
 
 import com.buap.alex.backendbuapclassroom.Domain.AlumnoTarea;
 import com.buap.alex.backendbuapclassroom.Domain.Tarea;
-import com.buap.alex.backendbuapclassroom.Domain.User;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
