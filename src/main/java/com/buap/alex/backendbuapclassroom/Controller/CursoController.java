@@ -41,6 +41,30 @@ public class CursoController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @GetMapping("/getCursosMa")
+    public ResponseEntity<?> getCursosMa(@RequestParam long idUser) throws JsonProcessingException {
+        Optional<User> user = userRepository.findUserByIdUser(idUser);
+        if (!user.isPresent()){
+            throw new ResourceNotFoundException("El usuario no se ha encontrado");
+        }
+        List<Curso> cursos = user.get().getCursosMaestros();
+        String cursosList = new ObjectMapper().writerWithView(JsonViewProfiles.Curso.class).writeValueAsString(cursos);
+
+        return new ResponseEntity<>(cursosList, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCursosAl")
+    public ResponseEntity<?> getCursosAl(@RequestParam long idUser) throws JsonProcessingException {
+        Optional<User> user = userRepository.findUserByIdUser(idUser);
+        if (!user.isPresent()){
+            throw new ResourceNotFoundException("El usuario no se ha encontrado");
+        }
+        List<Curso> cursos = user.get().getCursos();
+        String cursosList = new ObjectMapper().writerWithView(JsonViewProfiles.Curso.class).writeValueAsString(cursos);
+
+        return new ResponseEntity<>(cursosList, HttpStatus.OK);
+    }
+
     @PutMapping("/updateCurso")
     public ResponseEntity<Curso> updateCurso(@RequestBody Curso cursoData, @RequestParam long NRC){
         Optional<Curso> curso = cursoRepository.findCursoByNrc(NRC);
