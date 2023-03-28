@@ -1,6 +1,7 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Data.CursoMaestro;
+import com.buap.alex.backendbuapclassroom.Data.DataCursos;
 import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.User;
@@ -53,16 +54,15 @@ public class CursoController {
         return new ResponseEntity<>(cursosList, HttpStatus.OK);
     }
 
-    @GetMapping("/getCursosAl")
-    public ResponseEntity<?> getCursosAl(@RequestParam long idUser) throws JsonProcessingException {
-        Optional<User> user = userRepository.findUserByIdUser(idUser);
-        if (!user.isPresent()){
-            throw new ResourceNotFoundException("El usuario no se ha encontrado");
-        }
-        List<Curso> cursos = user.get().getCursos();
-        String cursosList = new ObjectMapper().writerWithView(JsonViewProfiles.Curso.class).writeValueAsString(cursos);
+    @GetMapping("/getData")
+    public ResponseEntity<?> getComentarios(@RequestParam long nrc) throws JsonProcessingException {
+        Curso curso = verifyCurso(nrc);
+        DataCursos dataCursos = new DataCursos(curso.getAlumnos(), curso.getComentarios(),
+                curso.getArchivos(), curso.getTareas());
 
-        return new ResponseEntity<>(cursosList, HttpStatus.OK);
+        String datosCurso = new ObjectMapper().writerWithView(JsonViewProfiles.Curso.class)
+                .writeValueAsString(dataCursos);
+        return new ResponseEntity<>(datosCurso, HttpStatus.OK);
     }
 
     @PutMapping("/updateCurso")
