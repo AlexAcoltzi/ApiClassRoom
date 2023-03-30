@@ -17,7 +17,7 @@ public class ComentarioController {
     @Autowired
     ComentarioRepository comentarioRepository;
 
-    @PostMapping("/crearComentario")
+    @PostMapping("/create")
     public ResponseEntity<?> crearComentario(@RequestBody Comentario comentario){
         comentarioRepository.save(comentario);
         return new ResponseEntity<>(HttpStatus.CREATED);

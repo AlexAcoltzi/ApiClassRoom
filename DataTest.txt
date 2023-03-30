@@ -2,7 +2,7 @@ Prueba Curso
 
 {
    "curso" : {
-       "nrc " : 551623,
+       "nrc" : 551623,
        "nombre" : "Dispositivos Móviles Avanzado",
        "dias" : "L - M - V",
        "horario" : "11 - 13"

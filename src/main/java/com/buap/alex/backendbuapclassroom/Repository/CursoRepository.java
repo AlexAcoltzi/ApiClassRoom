@@ -4,9 +4,12 @@ import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Repository
 public interface CursoRepository extends CrudRepository<Curso, Long> {
     Optional<Curso> findCursoByNrc(long NRC);
+
+    Optional<Curso> findCursoByIdCurso(long idCurso);
 }
