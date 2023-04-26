@@ -30,7 +30,7 @@ public class TareaController {
 
     //Servicio para crear una tarea
     @PostMapping("/create")
-    public ResponseEntity<?> crearTarea(@RequestBody TareaNueva tarea){
+    public ResponseEntity<?> crearTarea(@RequestBody TareaNueva tarea) {
         Curso curso = verifyCursoById(tarea.getIdCurso());
         Tarea tarea1 = tarea.getTarea();
         String Ruta = createDirectory(curso.getRuta(), tarea1.getNombre());
@@ -40,10 +40,9 @@ public class TareaController {
     }
 
 
-
     //Servicio para modificar una tarea
     @PutMapping("/update")
-    public ResponseEntity<?> updateTarea(@RequestBody ModificarTarea tarea){
+    public ResponseEntity<?> updateTarea(@RequestBody ModificarTarea tarea) {
         Tarea tareaToUpdate = verifyTarea(tarea.getIdTarea());
         Tarea dataTarea = tarea.getTarea();
 
@@ -57,63 +56,56 @@ public class TareaController {
     }
 
 
-
     //Servicio para obtener una tarea
     @GetMapping("/get")
     public ResponseEntity<?> getTarea(@RequestParam long id) throws JsonProcessingException {
         Tarea tarea = verifyTarea(id);
 
-        String tareaToGet = new ObjectMapper().writerWithView(JsonViewProfiles.Tarea.class)
-                .writeValueAsString(tarea);
+        String tareaToGet = new ObjectMapper().writerWithView(JsonViewProfiles.Tarea.class).writeValueAsString(tarea);
 
         return new ResponseEntity<>(tareaToGet, HttpStatus.OK);
     }
 
 
-
     //Servicio para eliminar una tarea
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteTarea(@RequestParam long id){
+    public ResponseEntity<?> deleteTarea(@RequestParam long id) {
         Tarea tarea = verifyTarea(id);
-
+        Curso curso = cursoRepository.findCursoByTareasContains(tarea).get();
+        tarea.removeCurso(curso);
         repository.delete(tarea);
-
         return new ResponseEntity<>(HttpStatus.OK);
-
     }
 
 
-
     //Función para validar que existe el curso buscado por su ID
-    protected Curso verifyCursoById(long id){
+    protected Curso verifyCursoById(long id) {
         Optional<Curso> curso = cursoRepository.findCursoByIdCurso(id);
-        if (!curso.isPresent()){
+        if (!curso.isPresent()) {
             throw new ResourceNotFoundException("Not foun class");
         }
         return curso.get();
     }
 
 
-
     //Función para validar si una tarea existe
-    protected Tarea verifyTarea(long id){
+    protected Tarea verifyTarea(long id) {
         Optional<Tarea> tarea = repository.findTareaByIdTarea(id);
-        if (!tarea.isPresent()){
+        if (!tarea.isPresent()) {
             throw new ResourceNotFoundException("Tarea not found");
         }
         return tarea.get();
     }
 
 
-
-    protected static String createDirectory(String ruta, String name){
+    protected static String createDirectory(String ruta, String name) {
         String directoryName = ruta.concat("/" + name);
 
         File directory = new File(directoryName);
-        if (!directory.exists()){
-            if (directory.mkdirs()){
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
                 System.out.println("Directorio creado " + directoryName);
-            } else{
+            } else {
                 System.out.println("Failed to create directory!");
             }
         }

@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Comentario")
@@ -26,31 +28,50 @@ public class Comentario {
     private Long idComent;
 
 
-
     @Column(name = "comentario")
-    @Getter @Setter
+    @Getter
+    @Setter
     private String comentario;
 
 
-
     //Relación muchos a uno, muchos comentarios pueden ser realizados por un usuario
-    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "idUser")
-    @Getter @Setter
+    @Getter
+    @Setter
     private User user;
 
 
-
     @Column(name = "fecha")
-    @Getter @Setter
+    @Getter
+    @Setter
     private Date fecha;
 
 
-
     //Relación muchos a muchos, muchos comentarios pueden estar en muchos cursos.
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "comentarioCursos", joinColumns = @JoinColumn(name = "idComent"), inverseJoinColumns = @JoinColumn(name = "idCurso"))
-    @Getter @Setter
-    private List<Curso> cursos;
+    @Getter
+    @Setter
+    private Set<Curso> cursos = new HashSet<Curso>();
+
+    public void addCurso(Curso cursoToAdd) {
+        this.cursos.add(cursoToAdd);
+        cursoToAdd.getComentarios().add(this);
+    }
+
+    public void removeCurso(Curso cursoToRemove) {
+        this.cursos.remove(cursoToRemove);
+        cursoToRemove.getComentarios().remove(this);
+    }
+
+    public void addUser(User userToAdd) {
+        this.setUser(userToAdd);
+        userToAdd.getComentarios().add(this);
+    }
+
+    public void deleteUser(User userToDelete){
+        this.setUser(null);
+        userToDelete.getComentarios().remove(this);
+    }
 }

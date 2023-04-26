@@ -34,15 +34,35 @@ public class Archivo {
 
 
     //Relación muchos a muchos, muchos archivos pueden estar en muchos cursos
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "archivos")
+    @ManyToMany(mappedBy = "archivos")
     @Getter @Setter
     private List<Curso> cursos;
 
 
 
     //Relación muchos a uno, muchos archivos pueden ser de un usuario
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "autor")
-    @Getter
+    @Getter @Setter
     private User autor;
+
+    public void addCursos(Curso cursoToAdd){
+        this.cursos.add(cursoToAdd);
+        cursoToAdd.getArchivos().add(this);
+    }
+
+    public void removeCursos(Curso cursoToRemove){
+        this.cursos.remove(cursoToRemove);
+        cursoToRemove.getArchivos().remove(this);
+    }
+
+    public void addAutor(User autorToAdd){
+        this.setAutor(autorToAdd);
+        autorToAdd.getArchivos().add(this);
+    }
+
+    public void removeAutor(User autorToRemove){
+        this.setAutor(null);
+        autorToRemove.getArchivos().remove(this);
+    }
 }

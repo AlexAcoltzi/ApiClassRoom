@@ -21,8 +21,8 @@ public class AlumnoTarea {
 
 
     //Relación uno a uno con usuario, un usuario puede tener una tarea realizada
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_user", referencedColumnName = "idUser")
+    @ManyToOne
+    @JoinColumn(name = "autor")
     @Getter @Setter
     private User user;
 
@@ -30,8 +30,8 @@ public class AlumnoTarea {
 
 
     //Relación uno a uno, una tarea puede tener una calificación
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_tarea", referencedColumnName = "idtarea")
+    @ManyToOne
+    @JoinColumn(name = "tarea_id")
     @Getter @Setter
     private Tarea tarea;
 
@@ -55,4 +55,25 @@ public class AlumnoTarea {
     @Column(name = "calificacion")
     @Getter @Setter
     private int calificacion;
+
+
+    public void addUser(User userToAdd){
+        this.setUser(userToAdd);
+        userToAdd.getAlumnoTarea().add(this);
+    }
+
+    public void removeUser(User userToRemove){
+        this.setUser(null);
+        userToRemove.getAlumnoTarea().remove(this);
+    }
+
+    public void addTarea(Tarea tareaToAdd){
+        this.setTarea(tareaToAdd);
+        tareaToAdd.getAlumnoTareas().add(this);
+    }
+
+    public void removeTarea(Tarea tareaToRemove){
+        this.setTarea(null);
+        tareaToRemove.getAlumnoTareas().remove(this);
+    }
 }

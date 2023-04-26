@@ -2,7 +2,6 @@ package com.buap.alex.backendbuapclassroom.Domain;
 
 
 import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +9,11 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "Usuario")
@@ -63,34 +66,41 @@ public class User {
     /*Relación de muchos a muchos con cursos, en cuestión de alumnos (Un alumno puede estar inscrito en muchos cursos y
     muchos cursos pueden tener inscritos a muchos alumnos)
      */
-    @ManyToMany(cascade = CascadeType.ALL, fetch =FetchType.LAZY)
+    @ManyToMany(fetch =FetchType.LAZY)
     @JoinTable(
             name = "AlumnoCursos", joinColumns = @JoinColumn(name = "idUser"), inverseJoinColumns = @JoinColumn(name = "idCurso")
     )
     @Getter @Setter
-    private List<Curso> cursos;
+    private List<Curso> cursos = new ArrayList<>();
 
 
 
     /*Relación uno a muchos con cursos en relación con maestros(un maestro puede tener asignado y
     muchos cursos pueden tener asignado a un maestro)
      */
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "maestro")
+    @OneToMany(mappedBy = "maestro")
     @Getter @Setter
-    private List<Curso> cursosMaestros;
+    private List<Curso> cursosMaestros = new ArrayList<>();
 
 
     /*Relación uno a muchos, un usuario puede tener muchos comentarios*/
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     @Getter @Setter
-    private List<Comentario> comentarios;
+    private List<Comentario> comentarios = new ArrayList<>();
 
 
 
     //Relación uno a muchos, un usuario puede tener muchos archivos
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "autor")
+    @OneToMany(mappedBy = "autor", cascade = CascadeType.REMOVE)
     @Getter @Setter
-    private List<Archivo> archivos;
+    private List<Archivo> archivos = new ArrayList<>();
+
+
+
+    //Relación uno a uno con tareas cargadas
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @Getter @Setter
+    private List<AlumnoTarea> alumnoTarea = new ArrayList<>();
 
 
 
@@ -104,4 +114,40 @@ public class User {
         this.tipo = tipo;
         this.ruta = ruta;
     }
+
+    public void addCursos(Curso cursoToAdd){
+        this.cursos.add(cursoToAdd);
+        cursoToAdd.getAlumnos().add(this);
+    }
+
+    public void removeCursos(Curso cursoTopRemove){
+        this.cursos.remove(cursoTopRemove);
+        cursoTopRemove.getAlumnos().remove(this);
+    }
+
+    public void addCursoMa(Curso cursoToAdd){
+        this.cursosMaestros.add(cursoToAdd);
+        cursoToAdd.setMaestro(this);
+    }
+
+    public void removeCursoMa(Curso cursoToRemove){
+        this.cursosMaestros.remove(cursoToRemove);
+        cursoToRemove.setMaestro(null);
+    }
+
+   /* public void addComment(Comentario comentarioToAdd){
+        this.comentarios.add(comentarioToAdd);
+        comentarioToAdd.setUser(this);
+    }
+
+    public void addArchivos(Archivo archivoToAdd){
+        this.archivos.add(archivoToAdd);
+        archivoToAdd.setAutor(this);
+    }
+
+    public void addTareaAlumno(AlumnoTarea tareaToAddAlumn){
+        this.alumnoTarea.add(tareaToAddAlumn);
+        tareaToAddAlumn.setUser(this);
+    }*/
+
 }

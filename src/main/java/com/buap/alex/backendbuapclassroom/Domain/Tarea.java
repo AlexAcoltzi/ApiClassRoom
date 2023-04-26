@@ -65,11 +65,29 @@ public class Tarea {
     @Column(name = "ruta")
     @Getter @Setter
     private String ruta;
+    
+    
+    
+    //Relación uno a muchos, una tarea puede tener muchos archivos de usuariosd cargadas
+    @OneToMany(mappedBy = "tarea", cascade = CascadeType.REMOVE)
+    @Getter @Setter
+    private List<AlumnoTarea> alumnoTareas;
 
 
 
     //Relación muchos a uno, puede haber muchas tareas en un curso.
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "curso_id")
     @Getter @Setter
     private Curso curso;
+
+    public void addCurso(Curso cursoToAdd){
+        this.setCurso(cursoToAdd);
+        cursoToAdd.getTareas().add(this);
+    }
+
+    public void removeCurso(Curso cursoToRemove){
+        this.setCurso(null);
+        cursoToRemove.getTareas().remove(this);
+    }
 }
