@@ -12,7 +12,6 @@ import com.buap.alex.backendbuapclassroom.Repository.CursoRepository;
 import com.buap.alex.backendbuapclassroom.Repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +41,7 @@ public class CursoController {
     @PostMapping("/create")
     public ResponseEntity<?> crearCurso(@RequestBody CursoMaestro cursoMaestro) {
         Curso curso = cursoMaestro.getCurso();
-        User user = userRepository.findUserByIdUser(cursoMaestro.getId()).get();
+        User user = verifyUser(cursoMaestro.getId());
         if (user.getTipo() != 0) {
             throw new ResourceNotFoundException("El usuario no es un maestro");
         }
@@ -106,8 +105,10 @@ public class CursoController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteCurso(@RequestParam long idCurso) {
         Curso curso = verifyCursoById(idCurso);
-        List<User> users = userRepository.findUserByCursosOrCursosMaestros(curso);
-        for (User user : users){
+        Set<User> users = new HashSet<>();
+        users.addAll(userRepository.findUsersByCursos(curso));
+        users.addAll(userRepository.findUserByCursosMaestros(curso));
+        for (User user : users) {
             curso.removeUser(user);
         }
         cursoRepository.delete(curso);
@@ -136,7 +137,7 @@ public class CursoController {
     //Función para validar que existe el curso buscado por su NRC
     protected Curso verifyCursoByNrc(long NRC) {
         Optional<Curso> curso = cursoRepository.findCursoByNrc(NRC);
-        if (!curso.isPresent()) {
+        if (curso.isEmpty()) {
             throw new ResourceNotFoundException("Not found class");
         }
         return curso.get();
@@ -146,7 +147,7 @@ public class CursoController {
     //Función para validar que existe el curso buscado por su ID
     protected Curso verifyCursoById(long id) {
         Optional<Curso> curso = cursoRepository.findCursoByIdCurso(id);
-        if (!curso.isPresent()) {
+        if (curso.isEmpty()) {
             throw new ResourceNotFoundException("Not foun class");
         }
         return curso.get();
@@ -156,7 +157,7 @@ public class CursoController {
     //Función para validar que existe un usuario buscado
     protected User verifyUser(long ID) {
         Optional<User> user = userRepository.findUserByIdUser(ID);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("No se encontró el alumno con matricula " + ID + " intenta de nuevo");
         }
         return user.get();

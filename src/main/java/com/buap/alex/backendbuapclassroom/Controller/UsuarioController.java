@@ -14,9 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/Usuarios")
@@ -31,7 +29,7 @@ public class UsuarioController {
     //Función para validar que existe el usuario por matrícula
     protected User verifyUserByMatricula(long matricula) {
         Optional<User> user = userRepository.findUserByMatricula(matricula);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("No se encontró el alumno con matricula " + matricula + " intenta de nuevo");
         }
         return user.get();
@@ -41,7 +39,7 @@ public class UsuarioController {
     //Función para validar que existe un usuario por su ID
     protected User verifyUserByID(long id) {
         Optional<User> user = userRepository.findUserByIdUser(id);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("User not found");
         }
         return user.get();
@@ -75,8 +73,7 @@ public class UsuarioController {
     @GetMapping("/getByID")
     public ResponseEntity<?> getUserByID(@RequestParam long id) throws JsonProcessingException {
         User user = verifyUserByID(id);
-        String dataUser = new ObjectMapper().writerWithView(JsonViewProfiles.User.class)
-                .writeValueAsString(user);
+        String dataUser = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(user);
 
         return new ResponseEntity<>(dataUser, HttpStatus.OK);
 
@@ -86,7 +83,7 @@ public class UsuarioController {
     //Servicio para validar la autenticación de un usuario
     @GetMapping("/getAcces")
     public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena) throws JsonProcessingException {
-        User user = userRepository.findUserByMatricula(matricula).get();
+        User user = verifyUserByMatricula(matricula);
         String contraEncode = new String(Base64.getDecoder().decode(contrasena), StandardCharsets.UTF_8);
         String contraUser = new String(Base64.getDecoder().decode(user.getContrasena()), StandardCharsets.UTF_8);
         System.out.println(contraUser);
@@ -112,7 +109,7 @@ public class UsuarioController {
     @GetMapping("/getCursosMa")
     public ResponseEntity<?> getCursosMa(@RequestParam long idUser) throws JsonProcessingException {
         Optional<User> user = userRepository.findUserByIdUser(idUser);
-        if (!user.isPresent()) {
+        if (user.isEmpty()) {
             throw new ResourceNotFoundException("El usuario no se ha encontrado");
         }
         List<Curso> cursos = user.get().getCursosMaestros();
@@ -133,13 +130,11 @@ public class UsuarioController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestParam long idUser) {
         User user = verifyUserByID(idUser);
-        List<Curso> cursos = cursoRepository.findCursosByAlumnosOrMaestro(user);
-        System.out.println("id user " + idUser);
-        System.out.println(cursos.size());
-            for (Curso curso : cursos) {
-                System.out.println("Hola entrando al ciclo");
-                System.out.println(curso);
-                curso.removeUser(user);
+        Set<Curso> cursos = new HashSet<>();
+        cursos.addAll(cursoRepository.findCursosByAlumnos(user));
+        cursos.addAll(cursoRepository.findCursosByMaestro(user));
+        for (Curso curso : cursos) {
+            curso.removeUser(user);
         }
         userRepository.delete(user);
         return new ResponseEntity<>(HttpStatus.OK);

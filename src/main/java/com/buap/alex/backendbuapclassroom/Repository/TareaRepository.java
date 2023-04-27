@@ -10,5 +10,5 @@ public interface TareaRepository extends CrudRepository<Tarea, Long> {
 
     Optional<Tarea> findTareaByIdTarea(long id);
 
-    Optional<Tarea> findTareaByCursoContains(Curso curso);
+    Optional<Tarea> findTareaByCurso(Curso curso);
 }
