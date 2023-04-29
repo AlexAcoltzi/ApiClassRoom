@@ -6,10 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "Comentario")
@@ -53,7 +50,7 @@ public class Comentario {
     @JoinTable(name = "comentarioCursos", joinColumns = @JoinColumn(name = "idComent"), inverseJoinColumns = @JoinColumn(name = "idCurso"))
     @Getter
     @Setter
-    private Set<Curso> cursos = new HashSet<Curso>();
+    private List<Curso> cursos = new ArrayList<>();
 
     public void addCurso(Curso cursoToAdd) {
         this.cursos.add(cursoToAdd);

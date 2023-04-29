@@ -1,5 +1,6 @@
 package com.buap.alex.backendbuapclassroom.Repository;
 
+import com.buap.alex.backendbuapclassroom.Domain.Comentario;
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.Tarea;
 import com.buap.alex.backendbuapclassroom.Domain.User;
@@ -21,7 +22,8 @@ public interface CursoRepository extends CrudRepository<Curso, Long> {
 
     List<Curso> findCursosByMaestro(User user);
 
+    List<Curso> findCursosByTareas(Tarea tarea);
 
-    Optional<Curso> findCursoByTareasContains(Tarea tarea);
+    List<Curso> findCursosByComentarios(Comentario comentario);
 
 }

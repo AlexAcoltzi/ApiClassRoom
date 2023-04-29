@@ -1,8 +1,6 @@
 package com.buap.alex.backendbuapclassroom.Domain;
 
 import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.persistence.*;
 import lombok.*;

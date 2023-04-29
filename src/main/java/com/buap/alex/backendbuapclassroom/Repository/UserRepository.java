@@ -18,4 +18,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
     List<User> findUsersByCursos(Curso curso);
 
     List<User> findUserByCursosMaestros(Curso curso);
+
+    Optional<User> findUserByComentarios(Comentario comentario);
 }

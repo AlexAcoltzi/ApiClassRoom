@@ -16,7 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/Tarea")
@@ -71,8 +74,10 @@ public class TareaController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteTarea(@RequestParam long id) {
         Tarea tarea = verifyTarea(id);
-        Curso curso = cursoRepository.findCursoByTareasContains(tarea).get();
-        tarea.removeCurso(curso);
+        Set<Curso> cursos = new HashSet<>(cursoRepository.findCursosByTareas(tarea));
+        for (Curso curso: cursos){
+            tarea.removeCurso(curso);
+        }
         repository.delete(tarea);
         return new ResponseEntity<>(HttpStatus.OK);
     }

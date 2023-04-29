@@ -103,13 +103,15 @@ public class CursoController {
 
     //Servicio para eliminar un curso
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteCurso(@RequestParam long idCurso) {
+    public ResponseEntity<?> deleteCurso(@RequestParam long idCurso) throws JsonProcessingException {
         Curso curso = verifyCursoById(idCurso);
         Set<User> users = new HashSet<>();
         users.addAll(userRepository.findUsersByCursos(curso));
         users.addAll(userRepository.findUserByCursosMaestros(curso));
-        for (User user : users) {
-            curso.removeUser(user);
+        for (User user : users){
+            if (user.getTipo() == 1){
+                user.removeCursos(curso);
+            } else user.removeCursoMa(curso);
         }
         cursoRepository.delete(curso);
         return new ResponseEntity<>(HttpStatus.OK);
