@@ -1,6 +1,7 @@
 package com.buap.alex.backendbuapclassroom.Controller;
 
 import com.buap.alex.backendbuapclassroom.Data.JsonViewProfiles;
+import com.buap.alex.backendbuapclassroom.Data.VerifyData;
 import com.buap.alex.backendbuapclassroom.Domain.Curso;
 import com.buap.alex.backendbuapclassroom.Domain.User;
 import com.buap.alex.backendbuapclassroom.Exception.ResourceNotFoundException;
@@ -8,11 +9,14 @@ import com.buap.alex.backendbuapclassroom.Repository.CursoRepository;
 import com.buap.alex.backendbuapclassroom.Repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -20,31 +24,20 @@ import java.util.*;
 @RequestMapping("/Usuarios")
 public class UsuarioController {
 
-    @Autowired
+    final
     UserRepository userRepository;
-    @Autowired
-    CursoRepository cursoRepository;
+    final
+    VerifyData verifyData;
+    final CursoRepository cursoRepository;
+
+    public UsuarioController(UserRepository userRepository, VerifyData verifyData, CursoRepository cursoRepository) {
+        this.userRepository = userRepository;
+        this.verifyData = verifyData;
+        this.cursoRepository = cursoRepository;
+    }
 
 
     //Función para validar que existe el usuario por matrícula
-    protected User verifyUserByMatricula(long matricula) {
-        Optional<User> user = userRepository.findUserByMatricula(matricula);
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("No se encontró el alumno con matricula " + matricula + " intenta de nuevo");
-        }
-        return user.get();
-    }
-
-
-    //Función para validar que existe un usuario por su ID
-    protected User verifyUserByID(long id) {
-        Optional<User> user = userRepository.findUserByIdUser(id);
-        if (user.isEmpty()) {
-            throw new ResourceNotFoundException("User not found");
-        }
-        return user.get();
-    }
-
 
     //Servicio para crear un usuario
     @PostMapping("/create")
@@ -63,7 +56,7 @@ public class UsuarioController {
     //Servicio para buscar un usuario por su matrícula
     @GetMapping("/getByMat")
     public ResponseEntity<?> getUserByMat(@RequestParam long matricula) throws JsonProcessingException {
-        User user = verifyUserByMatricula(matricula);
+        User user = verifyData.verifyUserByMatricula(matricula);
         String user1 = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(user);
         return new ResponseEntity<>(user1, HttpStatus.OK);
     }
@@ -72,7 +65,7 @@ public class UsuarioController {
     //Servicio para buscar un usuario por su id
     @GetMapping("/getByID")
     public ResponseEntity<?> getUserByID(@RequestParam long id) throws JsonProcessingException {
-        User user = verifyUserByID(id);
+        User user = verifyData.verifyUserByID(id);
         String dataUser = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(user);
 
         return new ResponseEntity<>(dataUser, HttpStatus.OK);
@@ -83,7 +76,7 @@ public class UsuarioController {
     //Servicio para validar la autenticación de un usuario
     @GetMapping("/getAcces")
     public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena) throws JsonProcessingException {
-        User user = verifyUserByMatricula(matricula);
+        User user = verifyData.verifyUserByMatricula(matricula);
         String contraEncode = new String(Base64.getDecoder().decode(contrasena), StandardCharsets.UTF_8);
         String contraUser = new String(Base64.getDecoder().decode(user.getContrasena()), StandardCharsets.UTF_8);
         System.out.println(contraUser);
@@ -98,7 +91,7 @@ public class UsuarioController {
     //Servicio para cambiar la contraseña de un usuario
     @PutMapping("/updatePass")
     public ResponseEntity<?> updateUser(@RequestParam String contrasena, @RequestParam long matricula) {
-        User user1 = verifyUserByMatricula(matricula);
+        User user1 = verifyData.verifyUserByMatricula(matricula);
         user1.setContrasena(contrasena);
         userRepository.save(user1);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -121,7 +114,20 @@ public class UsuarioController {
 
     //Servicio para cambiar la foto de perfil de un usuario
     @PutMapping("/updatePhoto")
-    public ResponseEntity<?> updateFoto() {
+    public ResponseEntity<?> updateFoto(@RequestParam String dataBase64, @RequestParam long id) {
+        System.out.println(dataBase64);
+        if (dataBase64 == null || dataBase64.isEmpty()){
+            throw new IllegalArgumentException("La cadena decode es nula o vacía");
+        }
+        byte[] encode = Base64.getDecoder().decode(dataBase64);
+        User user = verifyData.verifyUserByID(id);
+        File file = new File(createRuta(user.getNombre()).concat(".jpg"));
+        try(OutputStream outputStream= new FileOutputStream(file)) {
+            outputStream.write(encode);
+            user.setRuta(file.getAbsolutePath());
+        } catch (IOException e){
+            throw new ResourceNotFoundException("No se pudo lograr el guardado de imagen");
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -129,7 +135,7 @@ public class UsuarioController {
     //Servicio para eliminar a un usuario
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser(@RequestParam long idUser) {
-        User user = verifyUserByID(idUser);
+        User user = verifyData.verifyUserByID(idUser);
         Set<Curso> cursos = new HashSet<>();
         cursos.addAll(cursoRepository.findCursosByAlumnos(user));
         cursos.addAll(cursoRepository.findCursosByMaestro(user));
@@ -138,5 +144,18 @@ public class UsuarioController {
         }
         userRepository.delete(user);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    protected String createRuta(String nombre){
+        String PATH = "../../users/".concat(nombre);
+        File directory = new File(PATH);
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                System.out.println("Directorio creado " + PATH);
+            } else {
+                System.out.println("Failed to create directory!");
+            }
+        }
+        return PATH;
     }
 }

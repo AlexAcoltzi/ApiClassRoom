@@ -7,5 +7,5 @@ import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
 
 public interface AlumnoTareaRepository extends CrudRepository<AlumnoTarea, Long> {
-    Optional<AlumnoTarea> findAlumnoTareaByTarea(Tarea tarea);
+    Optional<AlumnoTarea> findAlumnoTareaByIdAlumnoTarea(long id);
 }

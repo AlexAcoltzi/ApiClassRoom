@@ -20,7 +20,7 @@ public class Archivo {
     @JsonView({JsonViewProfiles.Curso.class, JsonViewProfiles.Archivo.class})
     @Column(name = "idArchivo")
     @Getter
-    private long ididArchivo;
+    private long idArchivo;
 
     @Column(name = "nombre")
     @Getter @Setter

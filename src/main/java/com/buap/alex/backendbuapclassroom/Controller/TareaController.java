@@ -38,6 +38,7 @@ public class TareaController {
         Tarea tarea1 = tarea.getTarea();
         String Ruta = createDirectory(curso.getRuta(), tarea1.getNombre());
         tarea1.setRuta(Ruta);
+        tarea1.addCurso(curso);
         repository.save(tarea1);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

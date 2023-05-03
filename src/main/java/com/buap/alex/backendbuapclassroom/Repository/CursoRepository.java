@@ -1,9 +1,6 @@
 package com.buap.alex.backendbuapclassroom.Repository;
 
-import com.buap.alex.backendbuapclassroom.Domain.Comentario;
-import com.buap.alex.backendbuapclassroom.Domain.Curso;
-import com.buap.alex.backendbuapclassroom.Domain.Tarea;
-import com.buap.alex.backendbuapclassroom.Domain.User;
+import com.buap.alex.backendbuapclassroom.Domain.*;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -25,5 +22,7 @@ public interface CursoRepository extends CrudRepository<Curso, Long> {
     List<Curso> findCursosByTareas(Tarea tarea);
 
     List<Curso> findCursosByComentarios(Comentario comentario);
+
+    List<Curso> findCursosByArchivos(Archivo archivo);
 
 }

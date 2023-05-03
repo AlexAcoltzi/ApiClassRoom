@@ -43,8 +43,8 @@ public class ComentarioController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteComentario(@RequestParam long id){
         Comentario comentario = verifyComent(id);
-        User user = comentario.getUser();
-        List<Curso> cursos = comentario.getCursos();
+        User user = userRepository.findUserByComentarios(comentario).get();
+        List<Curso> cursos = cursoRepository.findCursosByComentarios(comentario);
         comentario.deleteUser(user);
         for (Curso curso : cursos){
             comentario.removeCurso(curso);

@@ -76,4 +76,8 @@ public class AlumnoTarea {
         this.setTarea(null);
         tareaToRemove.getAlumnoTareas().remove(this);
     }
+
+    public void calificar(int calificacion){
+        this.setCalificacion(calificacion);
+    }
 }
