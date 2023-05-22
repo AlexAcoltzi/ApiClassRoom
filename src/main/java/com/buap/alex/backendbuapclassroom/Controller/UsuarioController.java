@@ -76,11 +76,12 @@ public class UsuarioController {
     //Servicio para validar la autenticación de un usuario
     @GetMapping("/getAcces")
     public ResponseEntity<?> getAcces(@RequestParam long matricula, @RequestParam String contrasena) throws JsonProcessingException {
+        System.out.println(contrasena);
         User user = verifyData.verifyUserByMatricula(matricula);
-        String contraEncode = new String(Base64.getDecoder().decode(contrasena), StandardCharsets.UTF_8);
         String contraUser = new String(Base64.getDecoder().decode(user.getContrasena()), StandardCharsets.UTF_8);
         System.out.println(contraUser);
-        if (!contraUser.equals(contraEncode)) {
+        System.out.println(contrasena);
+        if (!contraUser.equals(contrasena)) {
             throw new ResourceNotFoundException("Contraseña incorrecta");
         }
         String user1 = new ObjectMapper().writerWithView(JsonViewProfiles.User.class).writeValueAsString(user);
